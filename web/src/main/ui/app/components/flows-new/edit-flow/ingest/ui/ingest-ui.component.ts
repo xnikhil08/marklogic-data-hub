@@ -147,7 +147,6 @@ export class IngestUiComponent implements OnInit{
       });
     inputFilePath.value = folder.absolutePath;
     //  this.inputFilePath = inputFilePath.value;
-
     // update the outputUriReplace options
       const outputUriReplace = _.find(generalGroup.settings, (setting: any) => {
       return setting.field === 'output_uri_replace';
@@ -333,12 +332,20 @@ export class IngestUiComponent implements OnInit{
     const port = this.envService.settings.stagingPort;
     const username = this.envService.settings.mlUsername;
     let input_file_path = this.step.fileLocations.inputFilePath;
-
+    let transform_param = `flow-name=${encodeURIComponent(this.flow.name)}`
+    let collections = this.flow.name.replace(new RegExp(' ', 'g'), '') + ',input,SampleProv'
     this.addMlcpOption(options, 'host', host, false, true);
     this.addMlcpOption(options, 'port', port, false, true);
     this.addMlcpOption(options, 'username', username, false, true);
     this.addMlcpOption(options, 'password', '*****', false, true);
     this.addMlcpOption(options, 'input_file_path', input_file_path, false, true);
+    this.addMlcpOption(options, 'transform_namespace', 'http://marklogic.com/data-hub/mlcp-flow-transform', false, true);
+    this.addMlcpOption(options, 'transform_module', '/data-hub/5/transforms/mlcp-flow-transform.sjs', false, true);
+    this.addMlcpOption(options, 'transform_param', transform_param, false, true);
+    this.addMlcpOption(options, 'output_collections', collections, false, true);
+    
+
+    
     //
     //  let filePath = this.step.fileLocations.inputFilePath;
     _.each(this.groups, (group) => {
