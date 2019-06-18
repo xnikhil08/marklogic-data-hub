@@ -127,6 +127,7 @@ export class IngestUiComponent implements OnInit{
 
   ngOnInit(): void {
     this.tooltips = FlowsTooltips.ingest;
+    this.updateMlcpCommand();
   }
 
   
@@ -393,7 +394,7 @@ export class IngestUiComponent implements OnInit{
   }
 
     // Testing 
-  mlcmd = this.updateMlcpCommand();
+  //mlcmd = this.updateMlcpCommand();
 
 /*
   runMlcp(flow: Flow, step: Step){
