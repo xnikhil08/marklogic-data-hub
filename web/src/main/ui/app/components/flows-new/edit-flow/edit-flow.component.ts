@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Flow} from "../models/flow.model";
 import {Step} from '../models/step.model';
@@ -9,6 +9,9 @@ import {EntitiesService} from '../../../models/entities.service';
 import { RunningJobService } from '../../jobs-new/services/running-job-service';
 import {Entity} from '../../../models';
 import * as _ from "lodash";
+
+import {ClipboardDirective} from '../../../directives/clipboard';
+
 
 @Component({
   selector: 'app-edit-flow',
@@ -30,6 +33,7 @@ import * as _ from "lodash";
     (stepSelected)="stepSelected($event)"
     (stepUpdate)="updateStep($event)"
     (stepDelete)="deleteStep($event)"
+    (clipboardSuccess)="clipboardSuccess.emit($event)"
   ></app-edit-flow-ui>
 `
 })
@@ -39,6 +43,7 @@ export class EditFlowComponent implements OnInit, OnDestroy {
   flowNames: string[];
   stepsArray: any;
   selectedStepId: string;
+  @Output() clipboardSuccess = new EventEmitter();
   databases: any = {
     final: '',
     staging: '',

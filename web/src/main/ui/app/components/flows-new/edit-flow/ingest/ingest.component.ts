@@ -1,4 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ClipboardDirective} from '../../../../directives/clipboard/clipboard.directive';
+import { Flow } from '../../models/flow.model';
+import { Step } from '../../models/step.model';
+
 
 @Component({
   selector: 'app-ingest',
@@ -7,15 +11,17 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
       [step]="step"
       [flow]="flow"
       (saveStep)="saveStep.emit($event)"
+      (clipboardSuccess)="clipboardSuccess.emit($event)"
     >
     </app-ingest-ui>
   `
 })
 export class IngestComponent implements OnInit {
-  @Input() step: any;
-  @Input() flow: any;
+  @Input() step: Step;
+  @Input() flow: Flow;
   @Input() projectDirectory: string;
   @Output() saveStep = new EventEmitter();
+  @Output() clipboardSuccess = new EventEmitter();
   constructor(
   ) {
   }
@@ -60,6 +66,7 @@ export class IngestComponent implements OnInit {
       targetDatabase: targetDatabase || '',
       headers: headers || {
         sources: [{ name: this.flow.name }],
+        
         createdOn: 'currentDateTime',
         createdBy: 'currentUser'
       }
