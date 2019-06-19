@@ -70,7 +70,6 @@ import {ManageJobsService} from './components/jobs-new/manage-jobs.service';
 import {ProjectService} from './services/projects';
 import { RunningJobService } from './components/jobs-new/services/running-job-service';
 import {STOMPService} from './services/stomp';
-import {ClipboardDirective} from './directives/clipboard/clipboard.directive';
 import {TraceService} from './components/traces/trace.service';
 import {SearchService} from './components/search/search.service';
 import {HarmonizeFlowOptionsComponent} from './components/harmonize-flow-options';
@@ -137,7 +136,6 @@ import {FolderBrowserModule} from "./components/folder-browser/folder-browser.mo
     SearchViewerComponent,
     SearchViewerUiComponent,
     NoContentComponent,
-    ClipboardDirective,
     HarmonizeFlowOptionsComponent,
     HarmonizeFlowOptionsUiComponent,
     DashboardComponent,

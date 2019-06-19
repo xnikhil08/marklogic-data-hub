@@ -14,6 +14,7 @@ import {NewStepDialogUiComponent} from './ui/new-step-dialog-ui.component';
 import {RunFlowDialogComponent} from './ui/run-flow-dialog.component';
 import {StepComponent} from './ui/step.component';
 import {StepperComponent} from './ui/stepper.component';
+import {ClipboardDirective} from '../../../directives/clipboard/clipboard.directive';
 
 import {MatchingComponent} from './mastering/matching/matching.component';
 import {MatchOptionsUiComponent} from './mastering/matching/ui/match-options-ui.component';
@@ -72,7 +73,8 @@ import {AppCommonModule} from "../../common";
     ListFilterPipe,
     TruncateCharactersPipe,
     CustomComponent,
-    CustomUiComponent
+    CustomUiComponent,
+    ClipboardDirective
   ],
   imports: [
     CommonModule,
@@ -92,7 +94,8 @@ import {AppCommonModule} from "../../common";
   exports: [
     FocusElementDirective,
     ListFilterPipe,
-    TruncateCharactersPipe
+    TruncateCharactersPipe,
+    ClipboardDirective
   ],
   providers: [],
   entryComponents: [
