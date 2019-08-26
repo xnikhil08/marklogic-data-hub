@@ -79,6 +79,8 @@
 
       </div><!-- ngFor -->
 
+ 
+
     </div><!-- source -->
 
     <div id="target">
@@ -118,4 +120,32 @@
 
   </div><!-- map-container -->
 
+  
+
 </div><!-- layout-padding -->
+<!-- New Source Design for mapping expression -->
+<div class="source-prop-container-map-exp">
+  <mat-table id="source-new-table" 
+             class="" matSort>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+      <mat-cell *matCellDef="let srcProp of sampleDocSrcProps">Name Details</mat-cell>
+      <mat-header-row *matHeaderRowDef="displayedColumns">{{srcProp.key}}</mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;">{{srcProp.val}}</mat-row>
+    </ng-container>
+  
+  </mat-table>      
+  <div>
+    <ul class=""l>
+        <li *ngFor="let srcProp of sampleDocSrcProps | listFilter:['key','type']"
+            role="menuitem"
+            >
+         
+            <span class="prop-name">{{srcProp.key}}</span>
+            
+            <span class="prop-val" title="{{type}}">{{ isQuoted(srcProp.type) ? '"' : '' }}{{ srcProp.val | slice:0:valMaxLen }}{{ srcProp.val.length > valMaxLen ? '...' : '' }}{{ isQuoted(srcProp.type) ? '"' : '' }}</span>
+       
+        </li>
+      </ul>
+  </div>
+</div>
