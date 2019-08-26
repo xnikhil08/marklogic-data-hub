@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {CdkStepperModule} from '@angular/cdk/stepper';
@@ -45,6 +45,8 @@ import {AppCommonModule} from "../../common";
 
 import {ClipboardDirective} from '../../../directives/clipboard/clipboard.directive';
 
+import {MatSortModule, MatTableModule, MatTableDataSource} from "@angular/material";
+
 @NgModule({
   declarations: [
     EditFlowComponent,
@@ -90,8 +92,11 @@ import {ClipboardDirective} from '../../../directives/clipboard/clipboard.direct
     TooltipModule.forRoot(),
     MdlModule,
     FolderBrowserModule,
-    AppCommonModule
+    AppCommonModule,
+    MatTableModule,
+    MatSortModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   exports: [
     FocusElementDirective,
     ListFilterPipe,
