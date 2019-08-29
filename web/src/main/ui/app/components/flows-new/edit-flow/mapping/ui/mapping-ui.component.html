@@ -130,8 +130,8 @@
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
       <mat-cell *matCellDef="let srcProp of sampleDocSrcProps">Name Details</mat-cell>
-      <mat-header-row *matHeaderRowDef="displayedColumns">{{srcProp.key}}</mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;">{{srcProp.val}}</mat-row>
+      <mat-header-row *matHeaderRowDef="">{{srcProp.key}}</mat-header-row>
+      <mat-row *matRowDef="">{{srcProp.val}}</mat-row>
     </ng-container>
   
   </mat-table>      

@@ -6,6 +6,8 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Mapping } from "../../../../mappings/mapping.model";
 
+import {MatDialog, MatPaginator, MatSort, MatTable, MatTableDataSource} from "@angular/material";
+
 @Component({
   selector: 'app-mapping-ui',
   templateUrl: './mapping-ui.component.html',
