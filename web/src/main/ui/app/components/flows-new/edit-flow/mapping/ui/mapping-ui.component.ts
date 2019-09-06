@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Entity } from '../../../../../models/index';
 import { MdlDialogService } from '@angular-mdl/core';
 
@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { Mapping } from "../../../../mappings/mapping.model";
 
 import {MatDialog, MatPaginator, MatSort, MatTable, MatTableDataSource} from "@angular/material";
+import { Step } from '../../../models/step.model';
 
 @Component({
   selector: 'app-mapping-ui',
@@ -18,9 +19,9 @@ export class MappingUiComponent implements OnChanges {
   @Input() mapping: Mapping = new Mapping();
   @Input() targetEntity: Entity = null;
   @Input() conns: object = {};
-  @Input() sampleDocSrcProps: Array<any> = [];
+  @Input() sampleDocSrcProps: Array<any>;
   @Input() editURIVal: string = '';
-
+  @Input() step: Step;
   @Output() updateURI = new EventEmitter();
   @Output() updateMap = new EventEmitter();
 
@@ -34,10 +35,61 @@ export class MappingUiComponent implements OnChanges {
 
   public editingURI: boolean = false;
   public editingSourceContext: boolean = false;
+  
+  displayedColumns = ['key', 'val'];
+  displayedEntityColumns = ['name','datatype','expression','value'];
 
+  dataSource: MatTableDataSource<any>;
+  mapExpresions: Array<any> = [];
+  mapExpValue: Array<any> = [];
+  runningStatus = false;
+
+  @ViewChild(MatTable)
+  table: MatTable<any>;
+
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator;
+
+  @ViewChild(MatSort)
+  sort: MatSort;
   /**
    * Update the sample document based on a URI.
    */
+
+  ngOnInit(){
+    if (!this.dataSource){
+      
+   this.dataSource = new MatTableDataSource<any>(this.sampleDocSrcProps);
+   console.log("Init called",this.dataSource);
+    }
+
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    //this.dataSource.data = this.sampleDocSrcProps;
+    console.log("After view Init called",this.dataSource);
+    //this.renderRows();
+  }
+  updateDataSource() {
+    if (!this.dataSource){
+      this.dataSource = new MatTableDataSource<any>(this.sampleDocSrcProps);
+      //console.log("UpdateData Source initialized",this.dataSource.data);
+       }
+    this.dataSource.data = this.sampleDocSrcProps;
+
+    console.log("UpdateData Source initialized",this.dataSource.data);
+    
+  }
+
+  renderRows(): void {
+
+    this.updateDataSource();
+    //this.table.renderRows();
+    console.log("render rows called",this.dataSource)
+  }
+
   onUpdateURI() {
     if (Object.keys(this.conns).length > 0) {
       let result = this.dialogService.confirm(
@@ -126,6 +178,9 @@ export class MappingUiComponent implements OnChanges {
     if (changes.conns) {
       this.connsOrig = _.cloneDeep(changes.conns.currentValue);
     }
+    if (changes.sampleDocSrcProps){
+      this.renderRows();
+       } 
   }
 
   /**

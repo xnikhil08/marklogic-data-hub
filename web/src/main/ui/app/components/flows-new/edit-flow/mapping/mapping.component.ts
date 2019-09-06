@@ -21,6 +21,7 @@ import { Flow } from "../../models/flow.model";
       [targetEntity]="this.targetEntity"
       [conns]="this.conns"
       [sampleDocSrcProps]="this.sampleDocSrcProps"
+      [step]="this.step"
       [editURIVal]="this.editURIVal"
       (updateURI)="this.updateURI($event)"
       (updateMap)="this.updateMap($event)"
