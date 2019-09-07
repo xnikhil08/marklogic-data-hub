@@ -37,7 +37,7 @@ export class MappingUiComponent implements OnChanges {
   public editingSourceContext: boolean = false;
   
   displayedColumns = ['key', 'val'];
-  displayedEntityColumns = ['name','datatype','expression','value'];
+  displayedEntityColumns = ['name','datatype','expression'];
 
   dataSource: MatTableDataSource<any>;
   mapExpresions: Array<any> = [];

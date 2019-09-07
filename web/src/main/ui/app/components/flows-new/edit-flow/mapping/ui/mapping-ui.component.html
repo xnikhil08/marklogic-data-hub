@@ -159,7 +159,7 @@
              matSort>
     <ng-container matColumnDef="key">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-      <mat-cell *matCellDef="let srcProp">{{srcProp.key}}</mat-cell>
+      <mat-cell *matCellDef="let srcProp">{{'@'+srcProp.key}}</mat-cell>
     </ng-container>
     <ng-container matColumnDef="val">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
@@ -196,15 +196,16 @@
       <ng-container matColumnDef="expression">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Expression</mat-header-cell>
           <mat-cell *matCellDef="let entProp; let i = index">
-              <input type="text" class="map-expr" [(ngModel)]="mapExpresions[i]" />
+              <textarea matInput
+              [(ngModel)]="mapExpresions[i]" type="text" class="map-expr" [includeBorders]="true"></textarea>
           </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="value">
+        <!-- <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
             <mat-cell *matCellDef="let entProp; let i = index">
                 <input type="text" class="map-expr-val" [(ngModel)]="mapExpValue[i]" />
             </mat-cell>
-          </ng-container>
+          </ng-container> -->
       
       <mat-header-row *matHeaderRowDef="displayedEntityColumns; sticky:true"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedEntityColumns;"></mat-row>
