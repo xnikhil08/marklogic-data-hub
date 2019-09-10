@@ -1,4 +1,4 @@
-<div layout-padding layout="column" class="map-page">
+<!-- <div layout-padding layout="column" class="map-page">
 
   <div *ngIf="!targetEntity" class="map-container">
     <em>Before configuring this mapping you must set a target entity. You can create new entities in the <a [routerLink]="['/entities']">Entities</a> view.</em>
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Dropdown row for each entity property -->
-      <div *ngFor="let entityProp of targetEntity?.definition.properties; let i = index;" class="source-prop-container">
+      <!-- <div *ngFor="let entityProp of targetEntity?.definition.properties; let i = index;" class="source-prop-container">
 
           <div class="btn-group" dropdown #dropdown="bs-dropdown" (onShown)="filterFocus[entityProp.name] = true;" (onHidden)="filterFocus[entityProp.name] = false;">
             <button dropdownToggle type="button" class="btn prop-select {{ 'prop-entity-' + entityProp.name }}">
@@ -42,19 +42,19 @@
                       class="fa fa-remove"
                       (click)="clearSelection($event, entityProp.name)">
                 </span>
-              </div>
+              </div> -->
 
               <!-- Connection exists, display selected item -->
-              <div *ngIf="conns[entityProp.name] && getConnSrcData(entityProp.name, 'key')">
+              <!-- <div *ngIf="conns[entityProp.name] && getConnSrcData(entityProp.name, 'key')">
                 <div class="prop-select-content {{ 'prop-select-content-' + entityProp.name }}">
                   <span class="prop-name">{{ getConnSrcData(entityProp.name, 'key') }}</span>
                   <span class="prop-type">{{ getConnSrcData(entityProp.name, 'type') }}</span>
                   <span class="prop-val" title="{{ getConnSrcData(entityProp.name, 'val') }}">{{ isQuoted(getConnSrcData(entityProp.name, 'type')) ? '"' : '' }}{{ getConnSrcData(entityProp.name, 'val') | slice:0:valMaxLen }}{{ getConnSrcData(entityProp.name, 'val').length > valMaxLen ? '...' : '' }}{{ isQuoted(getConnSrcData(entityProp.name, 'type')) ? '"' : '' }}</span>
                 </div>
-              </div>
+              </div> -->
 
               <!-- Connection does not exist, display placeholder -->
-              <div *ngIf="!conns[entityProp.name] || !getConnSrcData(entityProp.name, 'key')">
+              <!-- <div *ngIf="!conns[entityProp.name] || !getConnSrcData(entityProp.name, 'key')">
                 <div class="prop-select-content unselected">Select...</div>
               </div>
 
@@ -75,13 +75,13 @@
                 </li>
               </ul>
             </div>
-          </div><!-- button-group -->
+          </div>  button-group -->
 
-      </div><!-- ngFor -->
+      <!-- </div>ngFor -->
 
  
 
-    </div><!-- source -->
+    <!-- </div>source
 
     <div id="target">
       <div id="target-heading">
@@ -97,10 +97,10 @@
 
       <div *ngIf="targetEntity?.definition.properties.length === 0" class="no-properties">
         <em>{{ targetEntity?.info.title }} has no properties to map. Add them in the <a [routerLink]="['/entities']">Entities</a> view.</em>
-      </div>
+      </div> -->
 
       <!-- Row for each entity property -->
-      <div *ngFor="let prop of targetEntity?.definition.properties; let i = index;">
+      <!-- <div *ngFor="let prop of targetEntity?.definition.properties; let i = index;">
 
         <div class="entity-prop-container {{ 'entity-prop-container-' + prop.name }} ">
           <span class="prop-name">{{prop.name}}</span>
@@ -113,20 +113,20 @@
             <span class="entity-icon" tooltip="Required Field" container="body"><i class="fa fa-exclamation fa-fw" [ngClass]="isRequired(prop.name)? 'entity-icon-selected' : 'icon-hide'"></i></span>
             <span class="entity-icon" tooltip="Personally Identifiable Information" container="body"><i class="fa fa-lock fa-fw" [ngClass]="isPII(prop.name)? 'entity-icon-selected' : 'icon-hide'"></i></span>
           </span>
-        </div>
+        </div> 
 
-      </div><!-- ngFor -->
-    </div><!-- target -->
+      </div>--><!-- ngFor -->
+    <!-- </div> target -->
 
-  </div><!-- map-container -->
+  <!-- </div>map-container -->
 
   
 
-</div><!-- layout-padding -->
+<!-- </div>layout-padding -->
 <!-- New Source Design for mapping expression -->
-<p>{{this.sampleDocSrcProps | json}}</p>
+<!-- <p>{{this.sampleDocSrcProps | json}}</p>
 <p>{{targetEntity?.definition.properties[0] | json}}</p>
-<p>{{mapExpresions}}</p>
+<p>{{mapExpresions}}</p> -->
 <div class="source-prop-container-map-exp">
     
     <span>
@@ -198,6 +198,8 @@
           <mat-cell *matCellDef="let entProp; let i = index">
               <textarea matInput
               [(ngModel)]="mapExpresions[i]" type="text" class="map-expr" [includeBorders]="true"></textarea>
+              <!-- <span class="edit-save" [matMenuTriggerFor]="menu">f(x)</span> -->
+              <mat-icon id="function-list" class="function-list-icon" [matMenuTriggerFor]="menu" [matMenuTriggerData]="{ind: i}">more_vert</mat-icon>
           </mat-cell>
         </ng-container>
         <!-- <ng-container matColumnDef="value">
@@ -226,3 +228,8 @@
       </ul>
   </div> -->
 </div>
+<mat-menu class="flow-menu-dialog" #menu="matMenu">
+  <ng-template matMenuContent let-ind="ind">
+    <div class="flow-menu-edit-btn" mat-menu-item *ngFor="let func of functionList; let j = index" (click)="executeFunctions(func,ind)">{{functionList[j]}}</div>
+  </ng-template>
+</mat-menu>
