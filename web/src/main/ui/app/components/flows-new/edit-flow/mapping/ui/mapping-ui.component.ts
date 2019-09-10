@@ -44,6 +44,8 @@ export class MappingUiComponent implements OnChanges {
   mapExpValue: Array<any> = [];
   runningStatus = false;
 
+  functionList = ['avg','sum','percent','Others']; 
+
   @ViewChild(MatTable)
   table: MatTable<any>;
 
@@ -371,5 +373,27 @@ export class MappingUiComponent implements OnChanges {
   isPrimaryKey(name) {
     return _.includes(this.targetEntity.definition.primaryKey, name);
   }
+
+  executeFunctions(funcName,index){
+    this.mapExpresions[index] = this.mapExpresions[index] + " " + this.functionsDef(funcName);
+    console.log(funcName,this.mapExpresions[index])
+  }
+
+  functionsDef(funcName) {
+    switch(funcName) {
+      case 'sum': return "sum(a,b)";
+                  break;
+      case 'avg': return "avg(a,b)";
+                  break;
+      case 'percent': return "percent(a,b)";
+                  break;
+      case 'Other' : return "CUstomFunc";
+                  break;
+      default: return "";
+              break;
+
+    }
+
+    }
 
 }

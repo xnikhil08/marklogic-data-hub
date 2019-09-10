@@ -436,35 +436,6 @@ p.item-identifying-info {
 
 }
 
-//#source-new-table-entities {
-//   flex: 1 1 auto;
-//   //border-bottom: 1px solid rgba(0, 0, 0, .12);
-//   overflow: auto;
-//   padding-left: 2px;
-//  border: 1px solid rgba(0, 0, 0, .12);
-//   -webkit-overflow-scrolling: touch;
-//   //flex: 0 1 280px;
-//   //display: inline-block;
-  
-//   float: left;
-
-//   .mat-header-row {
-//     min-height: 48px;
-//     display: flex !important;
-//     justify-content: flex-end !important;
-//   }
-
-//   .mat-cell {
-//     min-width: 0;
-//     display: flex;
-//     //flex: 0 1 280px;
-//     align-items: center;
-//   }
-//   .mat-column-name {
-//     flex: 0 1 280px;
-//   }
-
-//   .mat-header-cell {
-//     cursor: pointer;
-//   }
-//}
+mat-icon {
+  user-select: none;
+}
