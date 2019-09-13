@@ -267,42 +267,32 @@ p.item-identifying-info {
 }
 
 .source-prop-container-map-exp {
-  padding: 20px 40px 620px 40px;
-  //max-width: 350px;
-  //display : flex;
+  padding: 20px 40px 320px 40px;
+  height: auto;
+  overflow: auto;
 }
 
 .Source_Tbl { 
-  //display: inline-block;
   float: left;
   padding-right: 20px;
-  //display: table !important;
   word-break: break-all;
 
   > #source-new-table {
-    //flex: 1 1 auto;
     width: 100% !important;
-    //border-bottom: 1px solid rgba(0, 0, 0, .12);
     overflow: auto;
-    //padding-right: 2px !important;
     border: 1px solid rgba(0, 0, 0, 0.961); 
     border-radius: 15px;
     -webkit-overflow-scrolling: touch;
-    //flex: 0 1 110px;
-    //float: left;
   
     mat-header-row {
       min-height: 48px;
-      //width: 100%;
       border: 1px solid rgba(0, 0, 0, .12) !important;
       display: flex !important;
       justify-content: flex-end !important;
       background-color: #D3D3D3;
     }
     mat-row {
-      //min-width: 100%;
       min-height: auto;
-      //width: 100%;
       display: flex !important;
       justify-content: flex-end !important;
 }
@@ -319,7 +309,6 @@ p.item-identifying-info {
       min-width: 0;
       border: 1px solid rgba(0, 0, 0, .12) !important;
       display: flex;
-      //flex: 0 1 280px;
       align-items: center;
       
     }
@@ -360,7 +349,6 @@ p.item-identifying-info {
 
 
 .source-type {
-    //display: inline-block;
     margin: 5px 10px 10px 0;
     font-size: 24px;
     font-weight: 200;
@@ -369,24 +357,13 @@ p.item-identifying-info {
 
 
 .Entities_Tbl {
-  // display: table;
-  // //flex: 1 0 auto;
-  // flex: 1 0 auto;
-  // //flex-direction: column;
-  // //display: inline-block;
-  // padding-left: 2px;
-  // //max-width: 450px;
   float: left;
-  //padding-right: 10px;
-  //display: table !important;
   word-break: break-all;
   width: auto !important;
-  min-width: 40% !important;
-  //flex: 1 1 auto !important;
+  min-width: 50% !important;
+
 > #source-new-table-entities {
-  //min-width: auto !important;
   width: auto !important;
-  //flex: 1 1 auto;
   overflow: auto;
   border: 1px solid rgba(0, 0, 0, 0.961); 
   border-radius: 15px;
@@ -396,17 +373,14 @@ p.item-identifying-info {
   }
   mat-header-row {
         min-height: 48px;
-        //min-width: 100px;
         width: 100%;
-        //border: 1px solid rgba(0, 0, 0, .12) !important;
         display: flex !important;
         justify-content: flex-end !important;
         background-color: #D3D3D3;
         
       }
   mat-row {
-        //min-width: 100%;
-        //min-height: auto;
+
         width: 100%;
         display: flex !important;
         justify-content: flex-end !important;
@@ -422,18 +396,21 @@ p.item-identifying-info {
         text-align: left;
           }
   .mat-column-name {
-          flex: 0 0 30% !important;
-          min-width: 104px !important;
+          flex: 0 1 70% !important;
+          min-width: 25% !important;
           border-right: 1px solid rgba(0, 0, 0, .12);
         }    
   .mat-column-datatype {
-          flex: 0 20% !important;
-          //border: 1px solid rgba(0, 0, 0, .12);
+          flex: 0 1 45% !important;
+          min-width: 10% !important;
         } 
   .mat-column-expression {
           flex: 0 1 100% !important;
-          //min-width: 50% !important;
+          min-width: 50% !important;
         }   
+  .mat-column-value {
+          flex: 0 1 80% !important;
+        }  
 }
 
 }
@@ -447,7 +424,7 @@ mat-icon {
 
 #edit-expression{
   min-height: 60%;
-  border: 1px solid rgba(0, 0, 0, 0.886);
+  border: 1px solid rgba(0, 0, 0, 0.701);
   border-radius: 5%;
 }
 
