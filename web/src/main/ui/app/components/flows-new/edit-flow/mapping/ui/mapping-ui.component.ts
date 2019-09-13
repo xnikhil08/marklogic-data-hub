@@ -40,11 +40,47 @@ export class MappingUiComponent implements OnChanges {
   displayedEntityColumns = ['name','datatype','expression'];
 
   dataSource: MatTableDataSource<any>;
-  mapExpresions: Array<any> = [];
+  mapExpresions = {};
   mapExpValue: Array<any> = [];
   runningStatus = false;
+  mapFunctions = {
 
-  functionList = ['avg','sum','percent','Others']; 
+    sum: {
+      category: "in-built",
+
+      description: "This function is used for calculating addition of two or more values.",
+
+      signature: "sum(a,b)"
+    },
+
+    avg: {
+      category: "in-built",
+
+      description: "This function is used for calculating average of two or more values.",
+
+      signature: "avg(a,b)"
+    },
+
+    percent: {
+
+      category: "custom",
+
+      description: "<Custom description>",
+
+      signature: "percent(a,b)"
+    },
+
+    other: {
+
+      category: "in-built",
+
+      description: "<Other description>",
+
+      signature: ""
+    }
+
+  }
+  functionList = Object.keys(this.mapFunctions);//['avg','sum','percent','Others']; 
 
   @ViewChild(MatTable)
   table: MatTable<any>;
@@ -64,7 +100,10 @@ export class MappingUiComponent implements OnChanges {
    this.dataSource = new MatTableDataSource<any>(this.sampleDocSrcProps);
    console.log("Init called",this.dataSource);
     }
-
+  if(_.isEmpty(this.mapExpresions)) {
+    console.log("mapExpression called",this.conns);
+    this.mapExpresions = this.conns;
+  }
   }
 
   ngAfterViewInit() {
@@ -90,6 +129,10 @@ export class MappingUiComponent implements OnChanges {
     this.updateDataSource();
     //this.table.renderRows();
     console.log("render rows called",this.dataSource)
+    if(_.isEmpty(this.mapExpresions)) {
+      console.log("mapExpression called",this.conns);
+      this.mapExpresions = this.conns;
+    }
   }
 
   onUpdateURI() {
@@ -165,7 +208,8 @@ export class MappingUiComponent implements OnChanges {
   }
 
   constructor(
-    private dialogService: MdlDialogService
+    private dialogService: MdlDialogService,
+    public dialog: MatDialog
   ) {}
 
   /**
@@ -306,6 +350,15 @@ export class MappingUiComponent implements OnChanges {
     return result;
   }
 
+  getInitialChars(str, num, suffix) {
+    suffix = suffix ? suffix : '...';
+    let result = str;
+    if (typeof str === 'string' && str.length > num) {
+      result = str.substr(0, num) + suffix;
+    }
+    return result;
+  }
+
    /**
     * Return string if sufficiently long, otherwise empty string
     * @param str String to return
@@ -374,26 +427,33 @@ export class MappingUiComponent implements OnChanges {
     return _.includes(this.targetEntity.definition.primaryKey, name);
   }
 
-  executeFunctions(funcName,index){
-    this.mapExpresions[index] = this.mapExpresions[index] + " " + this.functionsDef(funcName);
-    console.log(funcName,this.mapExpresions[index])
+  executeFunctions(funcName,propName){
+    this.mapExpresions[propName] = this.mapExpresions[propName] + " " + this.functionsDef(funcName);
+    console.log(funcName,propName,this.mapExpresions[propName])
   }
 
   functionsDef(funcName) {
-    switch(funcName) {
-      case 'sum': return "sum(a,b)";
-                  break;
-      case 'avg': return "avg(a,b)";
-                  break;
-      case 'percent': return "percent(a,b)";
-                  break;
-      case 'Other' : return "CUstomFunc";
-                  break;
-      default: return "";
-              break;
-
+    return this.mapFunctions[funcName].signature;
     }
+OpenFullSourceQuery () {
+  let result = this.dialogService.alert(
+    this.step.options.sourceQuery,
+    'OK'
+  );
+  result.subscribe();
 
-    }
+}
+  // openConfirmDeleteDialog(): void {
+  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+  //     width: '350px',
+  //     data: {title: 'Delete Flow', confirmationMessage: `Delete the flow "${flow.name}"?`}
+  //   });
+
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if(!!result){
+  //       this.deleteFlow.emit(flow.id);
+  //     }
+  //   });
+  // }
 
 }
