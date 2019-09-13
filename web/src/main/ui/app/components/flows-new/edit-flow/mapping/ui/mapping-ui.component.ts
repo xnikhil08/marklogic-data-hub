@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { Entity } from '../../../../../models/index';
 import { MdlDialogService } from '@angular-mdl/core';
 
@@ -37,12 +37,13 @@ export class MappingUiComponent implements OnChanges {
   public editingSourceContext: boolean = false;
   
   displayedColumns = ['key', 'val'];
-  displayedEntityColumns = ['name','datatype','expression'];
+  displayedEntityColumns = ['name','datatype','expression','value'];
 
   dataSource: MatTableDataSource<any>;
   mapExpresions = {};
   mapExpValue: Array<any> = [];
   runningStatus = false;
+ 
   mapFunctions = {
 
     sum: {
@@ -90,6 +91,9 @@ export class MappingUiComponent implements OnChanges {
 
   @ViewChild(MatSort)
   sort: MatSort;
+
+  @ViewChildren('fieldName') fieldName:QueryList<any>;
+
   /**
    * Update the sample document based on a URI.
    */
@@ -109,28 +113,17 @@ export class MappingUiComponent implements OnChanges {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    //this.dataSource.data = this.sampleDocSrcProps;
-    console.log("After view Init called",this.dataSource);
-    //this.renderRows();
   }
   updateDataSource() {
     if (!this.dataSource){
       this.dataSource = new MatTableDataSource<any>(this.sampleDocSrcProps);
-      //console.log("UpdateData Source initialized",this.dataSource.data);
        }
     this.dataSource.data = this.sampleDocSrcProps;
-
-    console.log("UpdateData Source initialized",this.dataSource.data);
-    
   }
 
   renderRows(): void {
-
     this.updateDataSource();
-    //this.table.renderRows();
-    console.log("render rows called",this.dataSource)
     if(_.isEmpty(this.mapExpresions)) {
-      console.log("mapExpression called",this.conns);
       this.mapExpresions = this.conns;
     }
   }
@@ -443,17 +436,15 @@ OpenFullSourceQuery () {
   result.subscribe();
 
 }
-  // openConfirmDeleteDialog(): void {
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-  //     width: '350px',
-  //     data: {title: 'Delete Flow', confirmationMessage: `Delete the flow "${flow.name}"?`}
-  //   });
 
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if(!!result){
-  //       this.deleteFlow.emit(flow.id);
-  //     }
-  //   });
-  // }
+insertFunction(fname,index) {
+
+    var startPos = this.fieldName.toArray()[index].nativeElement.selectionStart;
+    this.fieldName.toArray()[index].nativeElement.focus();
+    this.fieldName.toArray()[index].nativeElement.value = this.fieldName.toArray()[index].nativeElement.value.substr(0, this.fieldName.toArray()[index].nativeElement.selectionStart) + this.functionsDef(fname) + this.fieldName.toArray()[index].nativeElement.value.substr(this.fieldName.toArray()[index].nativeElement.selectionStart, this.fieldName.toArray()[index].nativeElement.value.length);
+
+    this.fieldName.toArray()[index].nativeElement.selectionStart = startPos;
+    this.fieldName.toArray()[index].nativeElement.focus();
+    }
 
 }

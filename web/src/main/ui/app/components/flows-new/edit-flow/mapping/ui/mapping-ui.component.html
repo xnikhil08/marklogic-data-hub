@@ -1,9 +1,6 @@
-<!-- </div>layout-padding -->
+<!-- layout-padding -->
 <!-- New Source Design for mapping expression -->
-<!-- <p>{{this.sampleDocSrcProps | json}}</p> -->
-<!-- <p>{{targetEntity?.definition.properties[0] | json}}</p> -->
-<!-- <p>{{this.conns | json}}</p>
-<p>{{this.mapExpresions | json}}</p> -->
+
 <div class="source-prop-container-map-exp">
     
     <span>
@@ -78,14 +75,20 @@
             &nbsp;&nbsp;<textarea 
               id="edit-expression"
               matInput
-              [(ngModel)]="mapExpresions[entProp.name]" (change)="handleSelection(entProp.name, mapExpresions[entProp.name])" type="text" class="map-expr" [includeBorders]="true"
+             #fieldName [(ngModel)]="mapExpresions[entProp.name]" (change)="handleSelection(entProp.name, mapExpresions[entProp.name])" type="text" class="map-expr" [includeBorders]="true"
               ></textarea>
               <!-- cdkTextareaAutosize
               cdkAutosizeMinRows="1"
               cdkAutosizeMaxRows="2"></textarea> -->
               <!-- <span class="edit-save" [matMenuTriggerFor]="menu">f(x)</span> -->
-              &nbsp;&nbsp;<mat-icon id="fields-list" class="field-list-icon" [matMenuTriggerFor]="fieldListMenu"><i class="far fa-list fa-xs"></i></mat-icon>
-              &nbsp;&nbsp;<mat-icon id="function-list" class="function-list-icon" [matMenuTriggerFor]="menu" [matMenuTriggerData]="{ind: entProp.name}"><i class="far fa-function fa-xs"></i></mat-icon>
+              &nbsp;&nbsp;<mat-icon id="fields-list" class="field-list-icon" [matMenuTriggerFor]="fieldListMenu" [matMenuTriggerData]="{indx: i}"><i class="far fa-list fa-xs"></i></mat-icon>
+              &nbsp;&nbsp;<mat-icon id="function-list" class="function-list-icon" [matMenuTriggerFor]="menu" [matMenuTriggerData]="{ind: entProp.name,indx: i}"><i class="far fa-function fa-xs"></i></mat-icon>
+              &nbsp;&nbsp;
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="value">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;Value</mat-header-cell>
+          <mat-cell *matCellDef="let entProp">
           </mat-cell>
         </ng-container>
         <!-- <ng-container matColumnDef="value">
@@ -104,13 +107,13 @@
 </div>
 
 <mat-menu class="flow-menu-dialog" #menu="matMenu">
-  <ng-template matMenuContent let-ind="ind">
-    <div class="flow-menu-edit-btn" mat-menu-item *ngFor="let func of functionList; let j = index" (click)="executeFunctions(func,ind)">{{functionList[j]}}</div>
+  <ng-template matMenuContent let-indx="indx">
+    <div class="flow-menu-edit-btn" mat-menu-item *ngFor="let func of functionList; let j = index" (click)="insertFunction(func,indx)">{{functionList[j]}}</div>
   </ng-template>
 </mat-menu>
 
 <mat-menu class="field-list-menu" #fieldListMenu="matMenu">
   <ng-template matMenuContent>
-    <div class="field-list-menu-btn" mat-menu-item *ngFor="let srcProp of this.sampleDocSrcProps; let j = index">{{srcProp.key}}</div>
+    <div class="field-list-menu-btn" mat-menu-item *ngFor="let srcProp of this.sampleDocSrcProps" >{{srcProp.key}}</div>
   </ng-template>
 </mat-menu>
