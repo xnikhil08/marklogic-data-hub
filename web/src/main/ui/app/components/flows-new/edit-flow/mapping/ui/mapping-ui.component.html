@@ -14,7 +14,7 @@
       </div>
       <p class="item-identifying-info">
           <span class="uri-label" tooltip="The Query of the source document from which QuickStart generates the list of source property names." container="body">Query: </span>
-          <span class="edit-source-query" (click)="this.OpenFullSourceQuery()">{{ getInitialChars(this.step.options.sourceQuery, 30, '...') }}</span>
+          <span class="edit-source-query" (click)="this.OpenFullSourceQuery()" tooltip="{{ this.step.options.sourceQuery }}" container="body">{{ getInitialChars(this.step.options.sourceQuery, 30, '...') }}</span>
       </p>
       <p *ngIf="!editingURI" class="item-identifying-info">
           <span class="uri-label" tooltip="The URI of the source document from which QuickStart generates the list of source property names." container="body">URI: </span>
