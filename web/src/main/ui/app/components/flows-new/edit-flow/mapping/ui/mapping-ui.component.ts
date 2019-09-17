@@ -35,7 +35,7 @@ export class MappingUiComponent implements OnChanges {
 
   public editingURI: boolean = false;
   public editingSourceContext: boolean = false;
-  
+
   displayedColumns = ['key', 'val'];
   displayedEntityColumns = ['name','datatype','expression','value'];
 
@@ -43,7 +43,7 @@ export class MappingUiComponent implements OnChanges {
   mapExpresions = {};
   mapExpValue: Array<any> = [];
   runningStatus = false;
- 
+
   mapFunctions = {
 
     sum: {
@@ -81,7 +81,7 @@ export class MappingUiComponent implements OnChanges {
     }
 
   }
-  functionList = Object.keys(this.mapFunctions);//['avg','sum','percent','Others']; 
+  functionList = Object.keys(this.mapFunctions);//['avg','sum','percent','Others'];
 
   @ViewChild(MatTable)
   table: MatTable<any>;
@@ -100,7 +100,7 @@ export class MappingUiComponent implements OnChanges {
 
   ngOnInit(){
     if (!this.dataSource){
-      
+
    this.dataSource = new MatTableDataSource<any>(this.sampleDocSrcProps);
    console.log("Init called",this.dataSource);
     }
@@ -219,7 +219,7 @@ export class MappingUiComponent implements OnChanges {
     }
     if (changes.sampleDocSrcProps){
       this.renderRows();
-       } 
+       }
   }
 
   /**
@@ -427,24 +427,31 @@ export class MappingUiComponent implements OnChanges {
 
   functionsDef(funcName) {
     return this.mapFunctions[funcName].signature;
-    }
-OpenFullSourceQuery () {
-  let result = this.dialogService.alert(
-    this.step.options.sourceQuery,
-    'OK'
-  );
-  result.subscribe();
+  }
 
-}
+  OpenFullSourceQuery() {
+    let result = this.dialogService.alert(
+      this.step.options.sourceQuery,
+      'OK'
+    );
+    result.subscribe();
+  }
 
-insertFunction(fname,index) {
+  insertFunction(fname, index) {
+    this.insertTextIntoExpression(this.functionsDef(fname), index);
+  }
 
-    var startPos = this.fieldName.toArray()[index].nativeElement.selectionStart;
-    this.fieldName.toArray()[index].nativeElement.focus();
-    this.fieldName.toArray()[index].nativeElement.value = this.fieldName.toArray()[index].nativeElement.value.substr(0, this.fieldName.toArray()[index].nativeElement.selectionStart) + this.functionsDef(fname) + this.fieldName.toArray()[index].nativeElement.value.substr(this.fieldName.toArray()[index].nativeElement.selectionStart, this.fieldName.toArray()[index].nativeElement.value.length);
+  insertTextIntoExpression(text, fieldIndex) {
+    var nativeEl = this.fieldName.toArray()[fieldIndex].nativeElement;
+    var startPos = nativeEl.selectionStart;
+    nativeEl.focus();
 
-    this.fieldName.toArray()[index].nativeElement.selectionStart = startPos;
-    this.fieldName.toArray()[index].nativeElement.focus();
-    }
+    nativeEl.value =
+      nativeEl.value.substr(0, nativeEl.selectionStart) +
+      text +
+      nativeEl.value.substr(nativeEl.selectionStart, nativeEl.value.length);
 
+    nativeEl.selectionStart = startPos;
+    nativeEl.focus();
+  }
 }

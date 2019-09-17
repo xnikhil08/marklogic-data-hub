@@ -2,9 +2,9 @@
 <!-- New Source Design for mapping expression -->
 
 <div class="source-prop-container-map-exp">
-    
+
     <span>
-  
+
    <div class="Source_Tbl">
       <div class="item-title">
       <div class="item-type">Source Data</div>
@@ -27,9 +27,9 @@
           <span class="edit-save" (click)="onUpdateURI();"><i class="fa fa-check"></i></span>
           <span class="edit-cancel" (click)="cancelEditURI()"><i class="fa fa-remove"></i></span>
         </p>
-  <mat-table id="source-new-table" 
+  <mat-table id="source-new-table"
              [dataSource]="dataSource"
-             #table class="source-props" 
+             #table class="source-props"
              matSort>
     <ng-container matColumnDef="key">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
@@ -41,7 +41,7 @@
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>      
+  </mat-table>
 </div>
 
 <mat-divider [vertical]="true"></mat-divider>
@@ -49,16 +49,16 @@
 
 
   <div class="Entities_Tbl">
-      <div class="item-title"> 
+      <div class="item-title">
     <div class="item-type">Entity</div>
     <span class="help-icon">
         <a href="https://marklogic.github.io/marklogic-data-hub/refs/index-settings/" target="_blank"><i class="fa fa-question-circle fa-lg"></i></a>
     </span>
     </div>
     <p class="item-identifying-info" ng-class="title-entity-model">{{ targetEntity?.info.title }} </p>
-    <mat-table id="source-new-table-entities" 
-              [dataSource]="targetEntity?.definition.properties" 
-              class="Entity-props" 
+    <mat-table id="source-new-table-entities"
+              [dataSource]="targetEntity?.definition.properties"
+              class="Entity-props"
               matSort>
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
@@ -72,7 +72,7 @@
       <ng-container matColumnDef="expression">
           <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;Expression</mat-header-cell>
           <mat-cell *matCellDef="let entProp; let i = index">
-            &nbsp;&nbsp;<textarea 
+            &nbsp;&nbsp;<textarea
               id="edit-expression"
               matInput
              #fieldName [(ngModel)]="mapExpresions[entProp.name]" (change)="handleSelection(entProp.name, mapExpresions[entProp.name])" type="text" class="map-expr" [includeBorders]="true"
@@ -97,13 +97,13 @@
                 <input type="text" class="map-expr-val" [(ngModel)]="mapExpValue[i]" />
             </mat-cell>
           </ng-container> -->
-      
+
       <mat-header-row *matHeaderRowDef="displayedEntityColumns; sticky:true"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedEntityColumns;"></mat-row>
     </mat-table>
   </div>
   </span>
-  
+
 </div>
 
 <mat-menu class="flow-menu-dialog" #menu="matMenu">
@@ -113,7 +113,7 @@
 </mat-menu>
 
 <mat-menu class="field-list-menu" #fieldListMenu="matMenu">
-  <ng-template matMenuContent>
-    <div class="field-list-menu-btn" mat-menu-item *ngFor="let srcProp of this.sampleDocSrcProps" >{{srcProp.key}}</div>
+  <ng-template matMenuContent let-indx="indx">
+    <div class="field-list-menu-btn" mat-menu-item *ngFor="let srcProp of this.sampleDocSrcProps" (click)="insertTextIntoExpression(srcProp.key,indx)">{{srcProp.key}}</div>
   </ng-template>
 </mat-menu>
