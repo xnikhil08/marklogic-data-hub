@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, CSSProperties } from "react";
-import { Modal, Table, Icon, Popover, Input, Button, Alert, message, Tooltip, Spin } from "antd";
+import { Modal, Table, Icon, Popover, Input, Button, Alert, message, Tooltip, Spin, Divider } from "antd";
 import styles from './source-to-entity-map.module.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faObjectUngroup, faList, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +19,10 @@ const SourceToEntityMap = (props) => {
     const [srcURI, setSrcURI] = useState(props.sourceURI);
 
     const [srcData, setSrcData] = useState<any[]>([]);
+
+    //For TEST and Clear buttons
+    const [mapResp, setMapResp] = useState({});
+    const [isTestClicked, setIsTestClicked] = useState(false);
 
     //Navigate URI buttons
     const [uriIndex,setUriIndex] = useState(0);
@@ -307,6 +311,17 @@ const SourceToEntityMap = (props) => {
 
       };
 
+    
+    //Logic for Test and Clear buttons
+    const  getMapValidationResp = () => {
+
+    }
+
+    const onClear = () => {
+        setMapResp({});
+        setIsTestClicked(false);
+    }
+
 
 return (<Modal
         visible={props.mappingVisible}
@@ -337,6 +352,7 @@ return (<Modal
                 placement="right" 
                 ><Icon type="question-circle" className={styles.questionCircle} theme="filled" /></Popover></p>
             </div>
+            <Divider />
             <div className={styles.navigationCollapseButtons}>{navigationButtons}</div>
             <Spin spinning={JSON.stringify(props.sourceData) === JSON.stringify([]) && !props.docNotFound}> 
         <Table
@@ -359,10 +375,20 @@ return (<Modal
         <div 
         id="entityContainer"
         className={styles.entityContainer}>
-        <div className={styles.entityDetails}>
-                <p className={styles.entityTypeTitle}><i><FontAwesomeIcon icon={faObjectUngroup } size="sm" className={styles.entityIcon}/></i> Entity: {props.entityTypeTitle}</p>
-        </div>
-        <div className={styles.lineSpacing}></div>
+            <div className={styles.entityDetails}>
+                <span className={styles.entityTypeTitle}><p ><i><FontAwesomeIcon icon={faObjectUngroup} size="sm" className={styles.entityIcon} /></i> Entity: {props.entityTypeTitle}</p></span>
+                <span className={styles.btn_icons}>
+                    <Button id="Clear-btn" mat-raised-button color="primary" onClick={() => getMapValidationResp()}>
+                        Clear
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button id="Test-btn" mat-raised-button type="primary" onClick={() => onClear()}>
+                        Test
+                    </Button>
+                </span>
+            </div>
+            <Divider style={{marginBottom: '8px'}}></Divider>
+            <div className={styles.lineSpacing}></div>
         <Table
         pagination={false}
         className={styles.entityTable}
