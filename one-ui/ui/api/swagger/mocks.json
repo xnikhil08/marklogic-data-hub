@@ -5010,12 +5010,12 @@
       "matchingArtifact":
       {
         "type": "object",
-        "required": ["name", "targetEntity", "selectedSource"],
+        "required": ["name", "targetEntityType", "selectedSource"],
         "properties": {
           "name": {
             "type": "string"
           },
-          "targetEntity": {
+          "targetEntityType": {
             "type": "string",
             "description": "Entity Type of the mapped data that will be matched"
           },
@@ -5031,12 +5031,12 @@
       "mappingArtifact":
       {
         "type": "object",
-        "required": ["name", "targetEntity", "selectedSource"],
+        "required": ["name", "targetEntityType", "selectedSource"],
         "properties": {
           "name": {
             "type": "string"
           },
-          "targetEntity": {
+          "targetEntityType": {
             "type": "string",
             "description": "Entity Type the input data will be mapped to"
           },
@@ -5071,7 +5071,7 @@
             "type": "string",
             "description": "XPath expression that generates the value for the property or provides dataset for child expression"
           },
-          "targetEntity": {
+          "targetEntityType": {
             "type": "string",
             "description": "Entity Type the input data will be mapped to"
           },
