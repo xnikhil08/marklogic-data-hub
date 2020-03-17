@@ -139,6 +139,9 @@ const SourceToEntityMap = (props) => {
     }
     const onUpdateURINavButtons = (uri) => {
         props.fetchSrcDocFromUri(uri);
+        if(isTestClicked) {
+            getMapValidationResp(uri);
+          }
     }
 
     const navigationButtons = <span className={styles.navigate_source_uris}>
@@ -181,7 +184,7 @@ const SourceToEntityMap = (props) => {
             Object.keys(mapExp).map(key => {
                 obj[key] = { "sourcedFrom": mapExp[key] }
             })
-            //console.log('mapData',props.mapData);
+
             let dataPayload = {
                 name: props.mapName,
                 targetEntityType: props.mapData.targetEntityType,
@@ -190,7 +193,6 @@ const SourceToEntityMap = (props) => {
                 sourceQuery: props.mapData.sourceQuery,
                 properties: obj
             }
-            //console.log('dataPayLoad',dataPayload);
 
             let mapSavedResult = await props.updateMappingArtifact(dataPayload);
             if (mapSavedResult) {
@@ -199,9 +201,9 @@ const SourceToEntityMap = (props) => {
                 setErrorInSaving('error');
             }
             let mapArt = await props.getMappingArtifactByMapName(dataPayload.targetEntityType,props.mapName);
-            console.log('mapArt',mapArt)
+
             if(mapArt){
-                setSavedMappingArt({...mapArt})
+                await setSavedMappingArt({...mapArt})
             }
             setMapSaved(mapSavedResult);
         }
@@ -280,7 +282,6 @@ const SourceToEntityMap = (props) => {
             sorter: (a: any, b: any) => a.value.length - b.value.length,
             render: (text, row) => (<div>{!checkFieldInErrors(row.name) ? displayResp(row.name) : ''}</div>)
         }
-
     ]
 
     const customExpandIcon = (props) => {
@@ -346,21 +347,19 @@ const SourceToEntityMap = (props) => {
     }
 
     //Logic for Test and Clear buttons
-    const getMapValidationResp = async () => {
-        console.log('props.sourceData',props.sourceData)
+    const getMapValidationResp = async (uri) => {
         setIsTestClicked(true);
         try {
-            let resp = await getMappingValidationResp(props.mapName, savedMappingArt, props.sourceURI, 'data-hub-STAGING');
+            let resp = await getMappingValidationResp(props.mapName, savedMappingArt, uri, props.sourceDatabaseName);
             
             if (resp.status === 200) {
-                console.log('resp.data', resp.data);
                 setMapResp({ ...resp.data });
+                console.log('Mapping validation API called successfully!')
             }
         }
         catch (err) {
             console.log('Error while applying validation on current URI!', err)
         }
-
     }
 
     const onClear = () => {
@@ -398,7 +397,7 @@ const SourceToEntityMap = (props) => {
                         placement="right"
                     ><Icon type="question-circle" className={styles.questionCircle} theme="filled" /></Popover></p>
                 </div>
-                <Divider />
+                {/* <Divider /> */}
                 <div className={styles.navigationCollapseButtons}>{navigationButtons}</div>
                 <Spin spinning={JSON.stringify(props.sourceData) === JSON.stringify([]) && !props.docNotFound}>
                     <Table
@@ -409,7 +408,6 @@ const SourceToEntityMap = (props) => {
                         rowClassName={() => styles.sourceTableRows}
                         scroll={{ y: '70vh' }}
                         indentSize={14}
-                        //size="small"
                         columns={columns}
                         dataSource={srcData}
                         tableLayout="unset"
@@ -428,18 +426,17 @@ const SourceToEntityMap = (props) => {
                             Clear
                     </Button>
                         &nbsp;&nbsp;
-                    <Button id="Test-btn" mat-raised-button type="primary" onClick={() => getMapValidationResp()}>
+                    <Button id="Test-btn" mat-raised-button type="primary" onClick={() => getMapValidationResp(srcURI)}>
                             Test
                     </Button>
                     </span>
                 </div>
-                <Divider className={styles.DividerEntity}></Divider>
+                {/* <Divider className={styles.DividerEntity}></Divider> */}
 
                 <div className={styles.lineSpacing}></div>
                 <Table
                     pagination={false}
                     className={styles.entityTable}
-                    //size="small"
                     scroll={{ y: '70vh' }}
                     tableLayout="unset"
                     columns={entityColumns}
