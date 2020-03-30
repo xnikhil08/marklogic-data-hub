@@ -46,7 +46,7 @@ describe('Create/Edit Mapping artifact component', () => {
   @Test -- at Object.<anonymous> (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.test.tsx:62:15)
   @Code -- at onChange (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.tsx:271:48)
   */
-  xtest('Verify able to type in input fields', () => {
+  test('Verify able to type in input fields', () => {
     const { getByText, getByLabelText, getByPlaceholderText } = render(<CreateEditMappingDialog {...data.newMap} />);
     
     const descInput = getByPlaceholderText('Enter description');
@@ -92,7 +92,7 @@ describe('Create/Edit Mapping artifact component', () => {
   @Test -- at Object.<anonymous> (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.test.tsx:97:15)
   @Code -- at onChange (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.tsx:271:48)
   */
-  xtest('Verify delete dialog modal when Cancel is clicked', () => {
+  test('Verify delete dialog modal when Cancel is clicked', () => {
     const { getByLabelText, getByText, debug, rerender, queryByText } = render(<CreateEditMappingDialog {...data.newMap} />);
     fireEvent.click(getByLabelText('Query'));
     fireEvent.click(getByText('Cancel'));
@@ -102,7 +102,7 @@ describe('Create/Edit Mapping artifact component', () => {
     rerender(<CreateEditMappingDialog isSrcQueryTouched={true} deleteDialogVisible={true}/>);
     //debug();
     //Not getting Discard modal in the DOM. Needs to be fixed.
-    expect(getByText('Discard Changes?')).toBeInTheDocument();
+    expect(getByText(/^Discard Changes/i)).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
   })
@@ -111,13 +111,13 @@ describe('Create/Edit Mapping artifact component', () => {
   @Test -- at Object.<anonymous> (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.test.tsx:113:15)
   @Code -- at onChange (src/components/entities/mapping/create-edit-mapping-dialog/create-edit-mapping-dialog.tsx:271:48)
   */
-  xtest('Verify delete dialog modal when "x" is clicked', () => {
+  test('Verify delete dialog modal when "x" is clicked', () => {
     const { getByLabelText, getByText, debug, rerender, queryByText } = render(<CreateEditMappingDialog {...data.newMap} />);
     fireEvent.click(getByLabelText('Query'));
     fireEvent.click(getByLabelText('Close'));
     rerender(<CreateEditMappingDialog isSrcQueryTouched={true} deleteDialogVisible={true}/>);
     //Not getting Discard modal in the DOM. Needs to be fixed.
-    expect(getByText('Discard Changes?')).toBeInTheDocument();
+    expect(getByText(/^Discard Changes/i)).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
   })
