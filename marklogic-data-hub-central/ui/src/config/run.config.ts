@@ -197,6 +197,21 @@ const mappings = {"data" :
 "status" :200
 };
 
+const mapSettings = {"data" :
+[{
+    "collections": ["Mapping1", "Customer"],
+    "additionalCollections": [],
+    "permissions": "data-hub-common,read,data-hub-common,update",
+    "sourceDatabase": "data-hub-STAGING",
+    "targetDatabase": "data-hub-FINAL",
+    "validateEntity": false,
+    "provenanceGranularityLevel": "coarse",
+    "lastUpdated": "2020-06-02T23:48:05.874691-07:00"
+}
+],
+"status" : 200
+};
+
 const matchings = {"data" :
     [{
       "entityType": "Customer",
@@ -378,6 +393,7 @@ const data = {
     flowsXML: flowsXML,
     loadsXML: loadsXML,
     loadSettings: loadSettings,
+    mapSettings: mapSettings,
 };
 
 export default data;
