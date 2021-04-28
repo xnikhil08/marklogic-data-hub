@@ -23,6 +23,7 @@ import {DownOutlined} from "@ant-design/icons";
 import {getViewSettings, setViewSettings, clearSessionStorageOnRefresh} from "../../../../util/user-context";
 import ExpandCollapse from "../../../expand-collapse/expand-collapse";
 import ExpandableTableView from "../expandable-table-view/expandable-table-view";
+import CompareValuesModal from "../compare-values-modal/compare-values-modal";
 
 const DEFAULT_MATCHING_STEP: MatchingStep = {
   name: "",
@@ -89,6 +90,7 @@ const MatchingStepDetail: React.FC = () => {
   const [activeMatchedRuleset, setActiveMatchedRuleset] = useState<string[]>([]);
   const [activeMatchedUri, setActiveMatchedUri] = useState<string[]>([]);
   const [allRulesetNames] = useState<string[]>([]);
+  const [compareModalVisible, setCompareModalVisible] = useState(false);
 
   const menu = (
     <Menu>
@@ -641,8 +643,10 @@ const MatchingStepDetail: React.FC = () => {
                     <Collapse activeKey={activeMatchedUri} onChange={handleUrisCollapseChange} bordered={false}>
                       {rulesetDataList.actionPreviewData.map((actionPreviewData, index) => (
                         <Panel id="testMatchedUriDataPanel" key={actionPreviewData.name.concat(" - ") + actionPreviewData.action.concat("/") + index} header={
-                          <span aria-label="matchedUrisPanel"><div className={styles.uri1Position}>{actionPreviewData.uris[0]}<span className={styles.scoreDisplay}>  (Score: {actionPreviewData.score})</span></div>
-                            <div className={styles.uri2Position}>{actionPreviewData.uris[1]}</div></span>
+                          <span onClick={e => e.stopPropagation()}><div className={styles.uri1Position}>{actionPreviewData.uris[0]}<span className={styles.scoreDisplay}>  (Score: {actionPreviewData.score})</span>
+                            <span className={styles.compareButton}><MLButton type={"primary"} onClick={() => { setCompareModalVisible(true); }}>Compare</MLButton></span>
+                          </div>
+                          <div className={styles.uri2Position}>{actionPreviewData.uris[1]}</div></span>
                         }>
                           <span aria-label="expandedTableView"><ExpandableTableView rowData={actionPreviewData} allRuleset={curationOptions.activeStep.stepArtifact.matchRulesets} entityData={curationOptions.activeStep}/></span>
                         </Panel>))}
@@ -663,6 +667,7 @@ const MatchingStepDetail: React.FC = () => {
         editRuleset={editRuleset}
         toggleModal={toggleShowRulesetMultipleModal}
       />
+      <CompareValuesModal isVisible={compareModalVisible} toggleModal={setCompareModalVisible}/>
       <ThresholdModal
         isVisible={showThresholdModal}
         editThreshold={editThreshold}
