@@ -6,6 +6,7 @@ import {faTrashAlt} from "@fortawesome/free-regular-svg-icons";
 import {useHistory} from "react-router-dom";
 import {MLButton, MLTable, MLInput, MLRadio} from "@marklogic/design-system";
 import styles from "./matching-step-detail.module.scss";
+import axios from "axios";
 import "./matching-step-detail.scss";
 import CustomPageHeader from "../../page-header/page-header";
 
@@ -24,7 +25,6 @@ import {getViewSettings, setViewSettings, clearSessionStorageOnRefresh} from "..
 import ExpandCollapse from "../../../expand-collapse/expand-collapse";
 import ExpandableTableView from "../expandable-table-view/expandable-table-view";
 import CompareValuesModal from "../compare-values-modal/compare-values-modal";
-import axios from "axios";
 
 const DEFAULT_MATCHING_STEP: MatchingStep = {
   name: "",
