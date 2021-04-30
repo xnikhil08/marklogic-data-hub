@@ -17,7 +17,6 @@ interface Props {
 const CompareValuesModal: React.FC<Props> = (props) => {
     let sampleData;
     let counter=0;
-
     const closeModal = () => {
         props.toggleModal(false);
     }
@@ -68,6 +67,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         closable={true}
         maskClosable={false}
         title={null}
+        footer={null}
         width={1400}
         destroyOnClose={true}
         onCancel={closeModal}
