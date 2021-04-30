@@ -24,6 +24,7 @@ import {getViewSettings, setViewSettings, clearSessionStorageOnRefresh} from "..
 import ExpandCollapse from "../../../expand-collapse/expand-collapse";
 import ExpandableTableView from "../expandable-table-view/expandable-table-view";
 import CompareValuesModal from "../compare-values-modal/compare-values-modal";
+import axios from "axios";
 
 const DEFAULT_MATCHING_STEP: MatchingStep = {
   name: "",
@@ -91,6 +92,8 @@ const MatchingStepDetail: React.FC = () => {
   const [activeMatchedUri, setActiveMatchedUri] = useState<string[]>([]);
   const [allRulesetNames] = useState<string[]>([]);
   const [compareModalVisible, setCompareModalVisible] = useState(false);
+  const [uriInfo,setUriInfo] = useState<any>();
+  const [entityProperties, setEntityProperties] = useState<any>();
 
   const menu = (
     <Menu>
@@ -465,6 +468,17 @@ const MatchingStepDetail: React.FC = () => {
     Array.isArray(keys) ? setActiveMatchedUri(keys):setActiveMatchedUri([keys]);
   };
 
+  const handleCompareButton = async (arr) => {
+      console.log("curationOptions ",curationOptions.entityDefinitionsArray[0].properties)
+      setEntityProperties(curationOptions.entityDefinitionsArray[0].properties)
+      const result1 = await axios(`/api/entitySearch?docUri=${arr[0]}`);
+      setCompareModalVisible(true);
+      console.log("Data for uri1 is ",result1.data.data.envelope.instance)
+      const result2 = await axios(`/api/entitySearch?docUri=${arr[1]}`);
+      setUriInfo([{result1},{result2}])
+      console.log("Data for uri1 is ",result2.data.data.envelope.instance)
+  }
+
   return (
     <>
       <CustomPageHeader
@@ -644,7 +658,7 @@ const MatchingStepDetail: React.FC = () => {
                       {rulesetDataList.actionPreviewData.map((actionPreviewData, index) => (
                         <Panel id="testMatchedUriDataPanel" key={actionPreviewData.name.concat(" - ") + actionPreviewData.action.concat("/") + index} header={
                           <span onClick={e => e.stopPropagation()}><div className={styles.uri1Position}>{actionPreviewData.uris[0]}<span className={styles.scoreDisplay}>  (Score: {actionPreviewData.score})</span>
-                            <span className={styles.compareButton}><MLButton type={"primary"} onClick={() => { setCompareModalVisible(true); }}>Compare</MLButton></span>
+                            <span className={styles.compareButton}><MLButton type={"primary"} onClick={() => {handleCompareButton([actionPreviewData.uris[0],actionPreviewData.uris[1]])}}>Compare</MLButton></span>
                           </div>
                           <div className={styles.uri2Position}>{actionPreviewData.uris[1]}</div></span>
                         }>
@@ -667,7 +681,13 @@ const MatchingStepDetail: React.FC = () => {
         editRuleset={editRuleset}
         toggleModal={toggleShowRulesetMultipleModal}
       />
-      <CompareValuesModal isVisible={compareModalVisible} toggleModal={setCompareModalVisible}/>
+      <CompareValuesModal
+        isVisible={compareModalVisible}
+        toggleModal={setCompareModalVisible}
+        uriInfo = {uriInfo}
+        activeStepDetails={curationOptions.activeStep}
+        entityProperties={entityProperties}
+      />
       <ThresholdModal
         isVisible={showThresholdModal}
         editThreshold={editThreshold}
