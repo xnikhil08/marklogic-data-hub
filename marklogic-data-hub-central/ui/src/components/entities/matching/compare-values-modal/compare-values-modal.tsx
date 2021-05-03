@@ -11,7 +11,8 @@ interface Props {
    toggleModal: (isVisible: boolean) => void;
    uriInfo: any;
    activeStepDetails: any;
-   entityProperties:any
+   entityProperties:any;
+   uriCompared:any;
 }
 
 const CompareValuesModal: React.FC<Props> = (props) => {
@@ -25,7 +26,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         {
             title: 'URI1',
             dataIndex: 'name',
-            key: 'property' + counter++,
+            key: 'name' + counter++,
                 render: (name,key) => {
                     return <span key ={key}>{name} </span>
                 }
@@ -61,6 +62,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         }
             sampleData = data;
             console.log("sampleData .....",sampleData); //props.uriInfo[0].result1.data.data.envelope
+            console.log("urisCompared .....",props.uriCompared); //props.uriInfo[0].result1.data.data.envelope
     }
     return <Modal
         visible={props.isVisible}
@@ -73,6 +75,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         onCancel={closeModal}
         onOk={closeModal}
         >
+        <div className={styles.compareValuesModalHeading}>Compare</div>
         <MLTable
           dataSource={props.entityProperties}
           columns={columns}
