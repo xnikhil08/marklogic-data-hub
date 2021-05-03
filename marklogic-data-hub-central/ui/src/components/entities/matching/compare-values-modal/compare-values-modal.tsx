@@ -3,6 +3,7 @@ import {Modal} from "antd";
 import "./compare-values-modal.scss";
 import styles from "./compare-values-modal.module.scss";
 import {MLTable} from "@marklogic/design-system";
+import matchIcon from "../../../../assets/matchIcon.png";
 
 interface Props {
    isVisible: any;
@@ -41,6 +42,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
     {
       dataIndex: "property1",
       key: "property1" + "uris1" + counter++,
+      width: "40%",
       render: (property1, key) => {
         return {
           props: {
@@ -53,6 +55,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
     {
       dataIndex: "property2",
       key: "property2" + "uris2" + counter++,
+      width: "40%",
       render: (property2, key) => {
         return {
           props: {
@@ -109,9 +112,21 @@ const CompareValuesModal: React.FC<Props> = (props) => {
     onCancel={closeModal}
     onOk={closeModal}
   >
-    <div className={styles.compareValuesModalHeading}>Compare</div>
+    <div><div className={styles.compareValuesModalHeading}>Compare</div>
+      <div>
+        <span className={styles.customer1}>Customer 1</span>
+        <span className={styles.customer2}>Customer 2</span>
+      </div>
+      <div className={styles.compareTableHeader}>
+        <span className={styles.uri1}>{props.uriCompared[0]}</span>
+        <span className={styles.uri2}>{props.uriCompared[1]}</span>
+      </div>
+      <span><img src={matchIcon} className={styles.matchIcon}></img></span>
+      <span className={styles.matchIconText}>Match</span>
+    </div>
     <MLTable
       dataSource={compareValuesData}
+      className={styles.compareValuesTable}
       columns={columns}
       rowKey="key"
       id="compareValuesTable"
