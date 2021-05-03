@@ -95,6 +95,7 @@ const MatchingStepDetail: React.FC = () => {
   const [compareModalVisible, setCompareModalVisible] = useState(false);
   const [uriInfo,setUriInfo] = useState<any>();
   const [entityProperties, setEntityProperties] = useState<any>();
+  const [urisCompared, setUrisCompared] = useState<string[]>([]);
 
   const menu = (
     <Menu>
@@ -470,7 +471,9 @@ const MatchingStepDetail: React.FC = () => {
       setCompareModalVisible(true);
       console.log("Data for uri1 is ",result1.data.data.envelope.instance)
       const result2 = await axios(`/api/entitySearch?docUri=${arr[1]}`);
+      const uris=[arr[0], arr[1]]
       setUriInfo([{result1},{result2}])
+      setUrisCompared(uris);
       console.log("Data for uri1 is ",result2.data.data.envelope.instance)
   }
 
@@ -684,6 +687,7 @@ const MatchingStepDetail: React.FC = () => {
         uriInfo = {uriInfo}
         activeStepDetails={curationOptions.activeStep}
         entityProperties={entityProperties}
+        uriCompared={urisCompared}
       />
       <ThresholdModal
         isVisible={showThresholdModal}
