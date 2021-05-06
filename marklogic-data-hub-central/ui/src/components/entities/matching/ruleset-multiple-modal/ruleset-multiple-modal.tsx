@@ -95,7 +95,9 @@ const MatchRulesetMultipleModal: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (props.isVisible && curationOptions.entityDefinitionsArray.length > 0 && curationOptions.activeStep.entityName !== "") {
+      // console.log("curationOptions.entityDefinitionsArray ",curationOptions.entityDefinitionsArray)
       let nestedEntityProps = parseDefinitionsToTable(curationOptions.entityDefinitionsArray);
+      // console.log("Final result is nestedEntityProps ",nestedEntityProps)
       setMultipleRulesetsData(nestedEntityProps);
       let initialKeysToExpand:any = generateExpandRowKeys(nestedEntityProps);
       setExpandedRowKeys([...initialKeysToExpand]);
