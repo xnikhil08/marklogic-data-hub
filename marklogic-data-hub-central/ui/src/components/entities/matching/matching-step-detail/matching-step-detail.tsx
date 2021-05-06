@@ -686,6 +686,7 @@ const MatchingStepDetail: React.FC = () => {
         entityProperties={entityProperties}
         uriCompared={urisCompared}
         previewMatchActivity={previewMatchedActivity}
+        entityDefinitionsArray={curationOptions.entityDefinitionsArray}
       />
       <ThresholdModal
         isVisible={showThresholdModal}
