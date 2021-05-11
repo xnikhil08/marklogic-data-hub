@@ -6,7 +6,6 @@ import {faTrashAlt} from "@fortawesome/free-regular-svg-icons";
 import {useHistory} from "react-router-dom";
 import {MLButton, MLTable, MLInput, MLRadio} from "@marklogic/design-system";
 import styles from "./matching-step-detail.module.scss";
-import axios from "axios";
 import "./matching-step-detail.scss";
 import CustomPageHeader from "../../page-header/page-header";
 
@@ -95,6 +94,7 @@ const MatchingStepDetail: React.FC = () => {
   const [uriInfo, setUriInfo] = useState<any>();
   const [entityProperties, setEntityProperties] = useState<any>();
   const [urisCompared, setUrisCompared] = useState<string[]>([]);
+  const [uris, setUris] = useState<string[]>([]);
 
   const menu = (
     <Menu>
@@ -145,6 +145,7 @@ const MatchingStepDetail: React.FC = () => {
         let ruleset = curationOptions.activeStep.stepArtifact.thresholds[i].thresholdName.concat(" - ") + curationOptions.activeStep.stepArtifact.thresholds[i].action;
         let score = curationOptions.activeStep.stepArtifact.thresholds[i].score;
         let actionPreviewList = [{}];
+        if(previewMatchActivity === undefined) previewMatchActivity={actionPreview:[]}
         for (let j = 0; j < previewMatchActivity.actionPreview.length; j++) {
           if (curationOptions.activeStep.stepArtifact.thresholds[i].thresholdName === previewMatchActivity.actionPreview[j].name && curationOptions.activeStep.stepArtifact.thresholds[i].action === previewMatchActivity.actionPreview[j].action) {
             actionPreviewList.push(previewMatchActivity.actionPreview[j]);
@@ -474,6 +475,7 @@ const MatchingStepDetail: React.FC = () => {
     const result1 = await getDocFromURI(arr[0]);
     const result2 = await getDocFromURI(arr[1]);
     const uris=[arr[0], arr[1]];
+    setUris(uris);
     if (result1.status === 200 && result2.status === 200) {
       let result1Instance = result1.data.data.envelope.instance;
       let result2Instance = result2.data.data.envelope.instance;
@@ -662,7 +664,7 @@ const MatchingStepDetail: React.FC = () => {
                       {rulesetDataList.actionPreviewData.map((actionPreviewData, index) => (
                         <Panel id="testMatchedUriDataPanel" key={actionPreviewData.name.concat(" - ") + actionPreviewData.action.concat("/") + index} header={
                           <span onClick={e => e.stopPropagation()}><div className={styles.uri1Position}>{actionPreviewData.uris[0]}<span className={styles.scoreDisplay}>  (Score: {actionPreviewData.score})</span>
-                            <span className={styles.compareButton}><MLButton type={"primary"} onClick={() => { handleCompareButton([actionPreviewData.uris[0], actionPreviewData.uris[1]]); }}>Compare</MLButton></span>
+                            <span className={styles.compareButton}><MLButton type={"primary"} onClick={() => { handleCompareButton([actionPreviewData.uris[0], actionPreviewData.uris[1]]); }} aria-label={actionPreviewData.uris[0].substr(0,41) + " compareButton"}>Compare</MLButton></span>
                           </div>
                           <div className={styles.uri2Position}>{actionPreviewData.uris[1]}</div></span>
                         }>
@@ -694,6 +696,7 @@ const MatchingStepDetail: React.FC = () => {
         uriCompared={urisCompared}
         previewMatchActivity={previewMatchedActivity}
         entityDefinitionsArray={curationOptions.entityDefinitionsArray}
+        uris={uris}
       />
       <ThresholdModal
         isVisible={showThresholdModal}
