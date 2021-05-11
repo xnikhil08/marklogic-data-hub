@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Modal} from "antd";
 import "./compare-values-modal.scss";
 import styles from "./compare-values-modal.module.scss";
@@ -21,10 +21,16 @@ interface Props {
 }
 
 const CompareValuesModal: React.FC<Props> = (props) => {
-  let counter=0;
-  let info1, info2;
   let property1, property2;
   let matchedProperties = [""];
+  const [compareValuesTableData, setCompareValuesTableData] = useState<any []>([]);
+
+  useEffect(() => {
+    if (props.isVisible && props.uriInfo) {
+      let parsedData = parseDefinitionsToTable(props.entityDefinitionsArray);
+      setCompareValuesTableData(parsedData);
+    }
+  }, [props.isVisible]);
 
   const DEFAULT_ENTITY_DEFINITION: Definition = {
     name: "",
@@ -35,11 +41,43 @@ const CompareValuesModal: React.FC<Props> = (props) => {
     props.toggleModal(false);
   };
 
-  const getPropertyPath = (parentKeys: any, propertyName: string) => {
-    let propertyPath = "";
-    parentKeys.forEach(el => !propertyPath.length ? propertyPath = el.split(",")[0] : propertyPath = propertyPath + "." + el.split(",")[0]);
-    propertyPath = propertyPath + "." + propertyName;
-    return propertyPath;
+  const getPropertyPath = (parentKeys: any, structuredTypeName: string, propertyName: string, propertyPath?: string, arrayIndex?: number, parentPropertyName?: string) => {
+    let updatedPropertyPath = "";
+    if (!propertyPath) {
+      if (parentPropertyName && arrayIndex!= undefined && arrayIndex >=0) {
+        parentKeys.forEach(el => {
+          let key = el.split(",")[0];
+          if (key === parentPropertyName) {
+            return !updatedPropertyPath.length ? updatedPropertyPath = `${key}[${arrayIndex}]` : updatedPropertyPath = updatedPropertyPath + "." + `${key}[${arrayIndex}]`;
+          } else {
+            return !updatedPropertyPath.length ? updatedPropertyPath = key : updatedPropertyPath = updatedPropertyPath + "." + key;
+          }
+        });
+      } else {
+        parentKeys.forEach(el => !updatedPropertyPath.length ? updatedPropertyPath = el.split(",")[0] : updatedPropertyPath = updatedPropertyPath + "." + el.split(",")[0]);
+      }
+      updatedPropertyPath = updatedPropertyPath + "." + structuredTypeName + "." + propertyName;
+    } else {
+      updatedPropertyPath = propertyPath + "." + structuredTypeName + "." + propertyName;
+    }
+    return updatedPropertyPath;
+  };
+
+  const propertyValueFromPath = (propertyPath, initialObj) => {
+    let propPath = propertyPath.split(".").reduce((o, curr) => {
+      if (curr.indexOf("[") !== -1) {
+        let updatedCurr = curr.slice(0, curr.indexOf("["));
+        let index = curr.slice(curr.indexOf("[") + 1, curr.indexOf("]"));
+        if (o[updatedCurr] && Array.isArray(o[updatedCurr])) {
+          return o[updatedCurr][index];
+        } else {
+          return o[updatedCurr] ? o[updatedCurr] : "";
+        }
+      } else {
+        return !o[curr] ? "" : o[curr];
+      }
+    }, initialObj);
+    return propPath;
   };
 
   const parseDefinitionsToTable = (entityDefinitionsArray: Definition[]) => {
@@ -47,61 +85,131 @@ const CompareValuesModal: React.FC<Props> = (props) => {
     return entityTypeDefinition?.properties.map((property, index) => {
       let propertyRow: any = {};
       let counter = 0;
-      let uriPropertyValue1="";
-      let uriPropertyValue2="";
+      let propertyValueInURI1="";
+      let propertyValueInURI2="";
+      if (props.uriInfo) {
+        property1=props.uriInfo[0]["result1Instance"][props.activeStepDetails.entityName];
+        property2=props.uriInfo[1]["result2Instance"][props.activeStepDetails.entityName];
+      }
       if (property.datatype === "structured") {
-        const parseStructuredProperty = (entityDefinitionsArray, property, parentDefinitionName, parentKey, parentKeys) => {
+        const parseStructuredProperty = (entityDefinitionsArray, property, parentDefinitionName, parentKey, parentKeys, propertyPath, indexArray?: number) => {
           let parsedRef = property.ref.split("/");
-          if (parentKey) {
-            parentKeys.push(parentKey);
-          } else {
-            parentKeys.push(property.name + "," + index + (counter+1));
+          if (indexArray == undefined) {
+            if (parentKey && !parentKeys.includes(parentKey)) {
+              parentKeys.push(parentKey);
+            } else {
+              parentKeys.push(property.name + "," + index + (counter+1));
+            }
           }
+
           if (parsedRef.length > 0 && parsedRef[1] === "definitions") {
+            let updatedPropPath= propertyPath ? propertyPath : property.name;
+            let URI1Value:any = propertyValueFromPath(updatedPropPath, property1);
+            let URI2Value:any = propertyValueFromPath(updatedPropPath, property2);
+            let arrLength = 0;
+            if ((URI1Value && Array.isArray(URI1Value)) || (URI2Value && Array.isArray(URI2Value))) {
+              arrLength = URI1Value.length > URI2Value.length ? URI1Value.length : URI2Value.length;
+            }
             let structuredType = entityDefinitionsArray.find(entity => entity.name === parsedRef[2]);
-            let structuredTypeProperties = structuredType?.properties.map((structProperty, structIndex) => {
-              if (structProperty.datatype === "structured") {
-                // Recursion to handle nested structured types
-                counter++;
-                let parentDefinitionName = structuredType.name;
-                let immediateParentKey = (parentKey !== "" ? property.name : structProperty.name) + "," + index + counter;
-                return parseStructuredProperty(entityDefinitionsArray, structProperty, parentDefinitionName, immediateParentKey, parentKeys);
-              } else {
-                let parentKeysArray = [...parentKeys];
-                // console.log("structProperty ",structProperty)
-                return {
-                  key: property.name + "," + index + structIndex + counter,
-                  // property1: {uriPropertyValue1: uriPropertyValue1, properties: structProperty},
+            let structuredTypePropertiesArray:any = [];
+            let structuredTypeProperties: any;
+            if (arrLength>0) {
+              let parentKeysTempArray = [...parentKeys];
+              for (let i = 0; i < arrLength; i++) {
+                let structTypeProperties = structuredType?.properties.map((structProperty, structIndex) => {
+                  if (structProperty.datatype === "structured") {
+                    // Recursion to handle nested structured types
+                    counter++;
+                    let parentDefinitionName = structuredType.name;
+                    let immediateParentKey = (parentKey !== "" ? property.name : structProperty.name) + "," + index + counter + i;
+                    let propertyPathUri = propertyPath ? propertyPath : getPropertyPath(parentKeysTempArray, structuredType.name, structProperty.name, undefined, i, property.name);
+                    return parseStructuredProperty(entityDefinitionsArray, structProperty, parentDefinitionName, immediateParentKey, parentKeysTempArray, propertyPathUri, i);
+                  } else {
+                    let parentKeysArray = [...parentKeysTempArray];
+                    let updatedPropertyPath = getPropertyPath(parentKeysTempArray, structuredType.name, structProperty.name, propertyPath, i, property.name);
+                    let propertyValueInURI1 = propertyValueFromPath(updatedPropertyPath, property1);
+                    let propertyValueInURI2 = propertyValueFromPath(updatedPropertyPath, property2);
+                    return {
+                      key: property.name + "," + index + structIndex + counter + i,
+                      propertyValueInURI1: propertyValueInURI1,
+                      propertyValueInURI2: propertyValueInURI2,
+                      structured: structuredType.name,
+                      propertyName: structProperty.name,
+                      propertyPath: getPropertyPath(parentKeysArray, structuredType.name, structProperty.name, propertyPath, i, property.name),
+                      type: structProperty.datatype === "structured" ? structProperty.ref.split("/").pop() : structProperty.datatype,
+                      multiple: structProperty.multiple ? structProperty.name : "",
+                      hasChildren: false,
+                      hasParent: true,
+                      parentKeys: parentKeysArray
+                    };
+                  }
+                });
+                let parentKeysArray = [...parentKeysTempArray];
+                let arrayRow = {
+                  key: property.name + "," + index + i + counter,
+                  propertyValueInURI1: propertyValueInURI1,
+                  propertyValueInURI2: propertyValueInURI2,
                   structured: structuredType.name,
-                  propertyName: structProperty.name,
-                  propertyPath: getPropertyPath(parentKeysArray, structProperty.name),
-                  type: structProperty.datatype === "structured" ? structProperty.ref.split("/").pop() : structProperty.datatype,
-                  multiple: structProperty.multiple ? structProperty.name : "",
-                  hasChildren: false,
+                  propertyName: (i+1)+" "+structuredType.name,
+                  propertyPath: getPropertyPath(parentKeysArray, structuredType.name, structuredType.name, propertyPath, i),
+                  children: structTypeProperties,
+                  hasChildren: true,
                   hasParent: true,
                   parentKeys: parentKeysArray
                 };
+                structuredTypePropertiesArray.push(arrayRow);
               }
-            });
+
+            } else {
+              structuredTypeProperties = structuredType?.properties.map((structProperty, structIndex) => {
+                if (structProperty.datatype === "structured") {
+                  // Recursion to handle nested structured types
+                  counter++;
+                  let parentDefinitionName = structuredType.name;
+                  let immediateParentKey = (parentKey !== "" ? property.name : structProperty.name) + "," + index + counter;
+                  let propertyPath = getPropertyPath(parentKeys, structuredType.name, structProperty.name);
+                  return parseStructuredProperty(entityDefinitionsArray, structProperty, parentDefinitionName, immediateParentKey, parentKeys, propertyPath);
+                } else {
+                  let parentKeysArray = [...parentKeys];
+                  let updatedPropertyPath = getPropertyPath(parentKeys, structuredType.name, structProperty.name, propertyPath);
+                  let propertyValueInURI1 = propertyValueFromPath(updatedPropertyPath, property1);
+                  let propertyValueInURI2 = propertyValueFromPath(updatedPropertyPath, property2);
+                  return {
+                    key: property.name + "," + index + structIndex + counter,
+                    propertyValueInURI1: propertyValueInURI1,
+                    propertyValueInURI2: propertyValueInURI2,
+                    structured: structuredType.name,
+                    propertyName: structProperty.name,
+                    propertyPath: getPropertyPath(parentKeysArray, structuredType.name, structProperty.name, propertyPath),
+                    type: structProperty.datatype === "structured" ? structProperty.ref.split("/").pop() : structProperty.datatype,
+                    multiple: structProperty.multiple ? structProperty.name : "",
+                    hasChildren: false,
+                    hasParent: true,
+                    parentKeys: parentKeysArray
+                  };
+                }
+              });
+            }
 
             let hasParent = parentKey !== "";
             let parentKeysArray = [...parentKeys];
             return {
               key: property.name + "," + index + counter,
               structured: structuredType.name,
-              property: {uriPropertyValue1: uriPropertyValue1, properties: property},
+              propertyValueInURI1: "",
+              propertyValueInURI2: "",
               propertyName: property.name,
-              propertyPath: hasParent ? getPropertyPath(parentKeysArray, property.name) : property.name,
+              propertyPath: hasParent ? getPropertyPath(parentKeys, structuredType.name, property.name, propertyPath) : property.name,
               multiple: property.multiple ? property.name : "",
               type: property.ref.split("/").pop(),
-              children: structuredTypeProperties,
+              children: arrLength ? structuredTypePropertiesArray : structuredTypeProperties,
               hasChildren: true,
               hasParent: hasParent,
               parentKeys: hasParent ? parentKeysArray : []
             };
           }
         };
-        propertyRow = parseStructuredProperty(entityDefinitionsArray, property, "", "", []);
+        propertyRow = parseStructuredProperty(entityDefinitionsArray, property, "", undefined, [], "");
         counter++;
       } else {
         // To handle non structured properties
@@ -116,24 +224,18 @@ const CompareValuesModal: React.FC<Props> = (props) => {
           }
         }
         if (props.uriInfo !== undefined) {
-          info1 = props.uriInfo[0].result1.data.data.envelope.instance;
-          property1=info1[props.activeStepDetails.entityName];
-          info2 = props.uriInfo[1].result2.data.data.envelope.instance;
-          property2=info2[props.activeStepDetails.entityName];
-          uriPropertyValue1 = property1[property.name];
-          uriPropertyValue2 = property2[property.name];
-          console.log("uriPropertyValue1 ", uriPropertyValue1);
-          console.log("uriPropertyValue2 ", uriPropertyValue2);
-          if (uriPropertyValue1 === undefined ||  uriPropertyValue2 === undefined) {
-            uriPropertyValue1="";
-            uriPropertyValue2="";
+          propertyValueInURI1 = property1[property.name];
+          propertyValueInURI2 = property2[property.name];
+          if (propertyValueInURI1 === undefined ||  propertyValueInURI2 === undefined) {
+            propertyValueInURI1="";
+            propertyValueInURI2="";
           }
         }
 
-        // console.log("uriPropertyValue1 ",uriPropertyValue1)
         propertyRow = {
           key: property.name + "," + index,
-          property: {uriPropertyValue1: uriPropertyValue1, uriPropertyValue2: uriPropertyValue2, properties: property},
+          propertyValueInURI1: propertyValueInURI1,
+          propertyValueInURI2: propertyValueInURI2,
           propertyName: property.name,
           propertyPath: property.name,
           type: property.datatype,
@@ -163,30 +265,30 @@ const CompareValuesModal: React.FC<Props> = (props) => {
       }
     },
     {
-      dataIndex: "property",
-      key: "property.uriPropertyValue1",
+      dataIndex: "propertyValueInURI1",
+      key: "propertyValueInURI1",
       width: "40%",
       ellipsis: true,
       render: (property, key) => {
         return {
           props: {
-            style: {background: matchedProperties.includes(property.properties.name) ? "#39944D" : ""}
+            style: {background: matchedProperties.includes(key.name) ? "#39944D" : ""}
           },
-          children: <span key={key}>{property.uriPropertyValue1}</span>
+          children: <span key={key}>{property}</span>
         };
       }
     },
     {
-      dataIndex: "property",
-      key: "property.uriPropertyValue2",
+      dataIndex: "propertyValueInURI2",
+      key: "propertyValueInURI2",
       width: "40%",
       ellipsis: true,
       render: (property, key) => {
         return {
           props: {
-            style: {background: matchedProperties.includes(property.properties.name) ? "#39944D" : ""}
+            style: {background: matchedProperties.includes(key.name) ? "#39944D" : ""}
           },
-          children: <span key={key}>{property.uriPropertyValue2}</span>
+          children: <span key={key}>{property}</span>
         };
       }
     },
@@ -215,7 +317,7 @@ const CompareValuesModal: React.FC<Props> = (props) => {
       <span className={styles.matchIconText}>Match</span>
     </div>
     <MLTable
-      dataSource={parseDefinitionsToTable(props.entityDefinitionsArray)}
+      dataSource={compareValuesTableData}
       className={styles.compareValuesTable}
       columns={columns}
       rowKey="key"
