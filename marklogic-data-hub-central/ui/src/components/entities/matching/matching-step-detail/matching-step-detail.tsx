@@ -20,7 +20,7 @@ import ThresholdModal from "../threshold-modal/threshold-modal";
 import {CurationContext} from "../../../../util/curation-context";
 import {MatchingStep} from "../../../../types/curation-types";
 import {MatchingStepDetailText} from "../../../../config/tooltips.config";
-import {updateMatchingArtifact, calculateMatchingActivity, previewMatchingActivity} from "../../../../api/matching";
+import {updateMatchingArtifact, calculateMatchingActivity, previewMatchingActivity, getDocFromURI} from "../../../../api/matching";
 import {DownOutlined} from "@ant-design/icons";
 import {getViewSettings, setViewSettings, clearSessionStorageOnRefresh} from "../../../../util/user-context";
 import ExpandCollapse from "../../../expand-collapse/expand-collapse";
@@ -466,11 +466,15 @@ const MatchingStepDetail: React.FC = () => {
 
   const handleCompareButton = async (arr) => {
     setEntityProperties(curationOptions.entityDefinitionsArray[0].properties);
-    const result1 = await axios(`/api/entitySearch?docUri=${arr[0]}`);
-    setCompareModalVisible(true);
-    const result2 = await axios(`/api/entitySearch?docUri=${arr[1]}`);
+    const result1 = await getDocFromURI(arr[0]);
+    const result2 = await getDocFromURI(arr[1]);
     const uris=[arr[0], arr[1]];
-    setUriInfo([{result1}, {result2}]);
+    if (result1.status === 200 && result2.status === 200) {
+      let result1Instance = result1.data.data.envelope.instance;
+      let result2Instance = result2.data.data.envelope.instance;
+      await setUriInfo([{result1Instance}, {result2Instance}]);
+    }
+    setCompareModalVisible(true);
     setUrisCompared(uris);
   };
 
