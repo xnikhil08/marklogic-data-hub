@@ -8,6 +8,14 @@
     background-color: #f1f1f1;
 }
 
+#compareValuesTable td{
+    border-color: white;
+}
+
+#compareValuesTable td:nth-child(1) {
+    background-color: #f1f1f1;
+}
+
 #compareValuesTable td:nth-child(2) {
     background-color: #D2EAE2;
 }
